@@ -10,7 +10,7 @@ RUN apk add --no-cache \
     php8-sodium php8-calendar php8-intl \
     mysql-client tar curl imagemagick npm \
     python2 python3 openssl git py-pip openssl-dev dcron \
-    rsync shadow jq ncurses \
+    rsync shadow jq ncurses tzdata \
     && sed -i 's/^Listen 80$/Listen 0.0.0.0:80/' /etc/apache2/httpd.conf
 # Needed to ensure permissions work across shared volumes with openemr, nginx, and php-fpm dockers
     RUN usermod -u 1000 apache
@@ -45,6 +45,7 @@ COPY openemr.conf /etc/apache2/conf.d/
 #add runner and auto_configure and prevent auto_configure from being run w/o being enabled
 COPY openemr.sh ssl.sh xdebug.sh auto_configure.php /var/www/localhost/htdocs/
 COPY utilities/unlock_admin.php utilities/unlock_admin.sh /root/
+COPY bash_aliases /root/.bash_aliases
 RUN chmod 500 openemr.sh ssl.sh xdebug.sh /root/unlock_admin.sh \
     && chmod 000 auto_configure.php /root/unlock_admin.php
 #fix issue with apache2 dying prematurely
