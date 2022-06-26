@@ -1,14 +1,14 @@
-FROM alpine:3.14
+FROM alpine:3.15
 
 #Install dependencies and fix issue in apache
 RUN apk --no-cache upgrade
 RUN apk add --no-cache \
-    apache2 apache2-ssl git php8 php8-tokenizer php8-ctype php8-session php8-apache2 \
+    apache2 apache2-ssl apache2-utils git php8 php8-tokenizer php8-ctype php8-session php8-apache2 \
     php8-json php8-pdo php8-pdo_mysql php8-curl php8-ldap php8-openssl php8-iconv \
     php8-xml php8-xsl php8-gd php8-zip php8-soap php8-mbstring php8-zlib \
     php8-mysqli php8-sockets php8-xmlreader php8-redis php8-simplexml php8-xmlwriter php8-phar php8-fileinfo \
     php8-sodium php8-calendar php8-intl \
-    perl mysql-client tar curl imagemagick npm \
+    perl mysql-client tar curl imagemagick nodejs npm \
     python2 python3 openssl py-pip openssl-dev dcron \
     rsync shadow ncurses tzdata \
     && sed -i 's/^Listen 80$/Listen 0.0.0.0:80/' /etc/apache2/httpd.conf
@@ -22,9 +22,13 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 
 ARG git_token
 RUN apk add --no-cache git build-base libffi-dev python3-dev cargo \
+<<<<<<< HEAD
     && git config --global url."https://${git_token}@github.com/".insteadOf "https://github.com" \
     && git clone https://github.com/providencehealthtech/polaris.git --depth 1 openemr \
     && git config --global url."https://github.com".insteadOf "https://${git_token}@github.com" \
+=======
+    && git clone https://github.com/openemr/openemr.git --branch rel-610 --depth 1 \
+>>>>>>> a938d69d1650c8fc1a897d0a2f25d3d19ec0679a
     && rm -rf openemr/.git \
     && cd openemr \
     && composer install --no-dev \
@@ -49,7 +53,12 @@ RUN apk add --no-cache git build-base libffi-dev python3-dev cargo \
     && pip install --upgrade pip \
     && pip install -e /opt/certbot/acme -e /opt/certbot/certbot \
     && mkdir -p /etc/ssl/certs /etc/ssl/private \
-    && apk del --no-cache git build-base libffi-dev python3-dev cargo
+    && apk del --no-cache git build-base libffi-dev python3-dev cargo \
+    && sed -i 's/^ *CustomLog/#CustomLog/' /etc/apache2/httpd.conf \
+    && sed -i 's/^ *ErrorLog/#ErrorLog/' /etc/apache2/httpd.conf \
+    && sed -i 's/^ *CustomLog/#CustomLog/' /etc/apache2/conf.d/ssl.conf \
+    && sed -i 's/^ *TransferLog/#TransferLog/' /etc/apache2/conf.d/ssl.conf
+    
 WORKDIR /var/www/localhost/htdocs/openemr
 VOLUME [ "/etc/letsencrypt/", "/etc/ssl" ]
 #configure apache & php properly
@@ -65,10 +74,12 @@ RUN chmod 500 openemr.sh ssl.sh xdebug.sh /root/unlock_admin.sh \
 COPY upgrade/docker-version \
      upgrade/fsupgrade-1.sh \
      upgrade/fsupgrade-2.sh \
+     upgrade/fsupgrade-3.sh \
      /root/
 RUN chmod 500 \
     /root/fsupgrade-1.sh \
-    /root/fsupgrade-2.sh
+    /root/fsupgrade-2.sh \
+    /root/fsupgrade-3.sh
 #fix issue with apache2 dying prematurely
 RUN mkdir -p /run/apache2
 #Copy dev tools library to root

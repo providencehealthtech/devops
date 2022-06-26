@@ -216,7 +216,7 @@ if [ -f /var/www/localhost/htdocs/auto_configure.php ] &&
 
     if [ -f /var/www/localhost/htdocs/openemr/package.json ]; then
         # install frontend dependencies (need unsafe-perm to run as root)
-        # IN ALPINE 3.14, there is an odd permission thing happening where need to give non-root ownership
+        # IN ALPINE 3.14+, there is an odd permission thing happening where need to give non-root ownership
         #  to several places ('node_modules' and 'public') in flex environment that npm is accessing via:
         #    'chown -R apache:1000 node_modules'
         #    'chown -R apache:1000 ccdaservice/node_modules'
@@ -360,8 +360,8 @@ rm -f /var/www/localhost/htdocs/auto_configure.php
 if [ "$REDIS_SERVER" != "" ] &&
    [ ! -f /etc/php-redis-configured ]; then
     # Variable for $REDIS_SERVER is usually going to be something like 'redis'
-    sed -i "s@session.save_handler = files@session.save_handler = redis@" /etc/php8/php.ini
-    sed -i "s@;session.save_path = \"/tmp\"@session.save_path = \"tcp://$REDIS_SERVER:6379\"@" /etc/php8/php.ini
+    sed -i "s@session.save_handler = files@session.save_handler = redis@" /etc/php81/php.ini
+    sed -i "s@;session.save_path = \"/tmp\"@session.save_path = \"tcp://$REDIS_SERVER:6379\"@" /etc/php81/php.ini
     # Ensure only configure this one time
     touch /etc/php-redis-configured
 fi

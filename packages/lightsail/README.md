@@ -1,6 +1,6 @@
 # OpenEMR Cloud: Do-It-Yourself Lightsail Edition
 
-This process will install a fully-functional, secured, preconfigured OpenEMR 6.0.0 instance on your Ubuntu server, providing an embedded MySQL server and rotated, automatic backups of all OpenEMR configuration and health information. While AWS is the main target, there is documentation around deploying to other webhosts or an on-premise server as well.
+This process will install a fully-functional, secured, preconfigured OpenEMR 6.1.0 instance on your Ubuntu server, providing an embedded MySQL server and rotated, automatic backups of all OpenEMR configuration and health information. While AWS is the main target, there is documentation around deploying to other webhosts or an on-premise server as well.
 
 ## Installation
 
@@ -8,7 +8,7 @@ This process will install a fully-functional, secured, preconfigured OpenEMR 6.0
 
 1. From the AWS Lightsail Dashboard, click *Create Instance*.
 2. Consider changing your region, or accept the datacenter Amazon has selected.
-3. For *Instance Image*, select *OS Only*, then *Ubuntu 16.04 LTS*.
+3. For *Instance Image*, select *OS Only*, then *Ubuntu 20.04 LTS*.
 4. Click the *+* to add a launch script, then paste the following.
 ```
 curl -L https://raw.githubusercontent.com/openemr/openemr-devops/master/packages/lightsail/launch.sh > ./launch.sh
@@ -29,12 +29,12 @@ chmod +x ./launch.sh && sudo ./launch.sh
 
 #### Requirements
 
-* Ubuntu 16.04 server (root access, 1 GB RAM, 20 GB storage)
+* Ubuntu 20.04 server (root access, 1 GB RAM, 20 GB storage)
 * Outbound internet access (during installation)
 
 #### Synopsis
 
-Although built for AWS Lightsail and EC2 Marketplace, nothing in `launch.sh` is specific to that platform; on any Ubuntu 16.04 instance, you may download and run the script as root to install the two Docker containers, `openemr` and `mysql-xtrabackup`, that represent the application. If you have more than a gigabyte of memory, or you are specifically billed for I/O activity, you may wish to review the command-line parameters to disable the automatic allocation of swap space.
+Although built for AWS Lightsail and EC2 Marketplace, nothing in `launch.sh` is specific to that platform; on any Ubuntu 20.04 instance, you may download and run the script as root to install the two Docker containers, `openemr` and `mysql-xtrabackup`, that represent the application. If you have more than a gigabyte of memory, or you are specifically billed for I/O activity, you may wish to review the command-line parameters to disable the automatic allocation of swap space.
 
 #### Directions
 
@@ -133,6 +133,12 @@ It is recommended, in the strongest possible terms, that you familiarize yoursel
 
 See the `mysql-xtrabackup` container for more information about the `xbackup.sh` and `xrecovery.sh` scripts called by the Duplicity wrappers.
 
+### Non-Lightsail Import
+
+The provided script `ingestion.sh` can import a manually-created OpenEMR backup, the `openemr.tar` file, destroying all current data in the instance without remedy. It's provided in order to ease transitions from Windows XAMPP installations or manual LAMP stacks to the dockerized environment, and although it can serve as part of a backup-and-restore regimen it's more a migration tool that may require remediation (non-LBF customization may be outright missed) before it can shoulder production loads.
+
+Launch it, preferably in a just-launched Lightsail instance, with `./ingestion.sh <backup-name>` after setting it executable.
+
 ### Next Steps
 
 There is an important and immediate flaw in the backup regimen to address &mdash; your backups will not be stored safely off the instance; until this is amended, if something happens to the server, your backups will be lost as well. Duplicity can be configured with a *bewildering* array of remote storage backends, and it is encouraged that you explore them as soon as possible.
@@ -150,4 +156,4 @@ There is an important and immediate flaw in the backup regimen to address &mdash
 
 ## Support
 
-The OpenEMR [forums](https://community.open-emr.org/) and [chat](https://chat.open-emr.org/) are available if you have any questions. We'll be happy to help!
+The OpenEMR [forums](https://community.open-emr.org/) and Slack are available if you have any questions. We'll be happy to help!

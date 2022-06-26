@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/openemr/openemr-devops.svg?branch=master)](https://travis-ci.org/openemr/openemr-devops)
-
 # openemr-devops
 OpenEMR administration and deployment tooling
 
@@ -31,8 +29,8 @@ See our [product comparison](https://www.open-emr.org/wiki/index.php/AWS_Cloud_P
 * [OpenEMR Monitor](utilities/openemr-monitor): OpenEMR Monitor is based on Prometheus, cAdvisor, Grafana, and alertmanger which helps administrator to monitor the status of containers
 * [Portainer](utilities/portainer): Portainer is a lightweight management UI which allows you to easily manage your different Docker environments (Docker hosts)
 * [OpenEMR Environment Migrator](utilities/openemr-env-migrator): OpenEMR Environment Migrator is used to migrate your container environment to the new storage directory or the remote host easily
-* [OpenEMR Kubernetes Orchestrations](kubernetes/minikube):  OpenEMR Kubernetes orchestration on Minikube. Creates 5 instances of OpenEMR with 1 instance of MariaDB, Redis, and phpMyAdmin.
+* [OpenEMR Kubernetes Orchestrations](kubernetes):  OpenEMR Kubernetes orchestration on Minikube. Creates 2 instances of OpenEMR with 1 instance of MariaDB, Redis, and phpMyAdmin.
 
 ## Contact Us
 
-The OpenEMR [Forum](https://community.open-emr.org/) and [Chat](https://www.open-emr.org/chat/) are always available if you have any questions.
+The OpenEMR [Forum](https://community.open-emr.org/) and Slack are always available if you have any questions.
